@@ -3,10 +3,8 @@ import * as THREE from 'three'
 import Loader from './Utils/Loader.js'
 import EventEmitter from './Utils/EventEmitter.js'
 
-export default class Resources extends EventEmitter
-{
-    constructor()
-    {
+export default class Resources extends EventEmitter {
+    constructor() {
         super()
 
         this.loader = new Loader()
@@ -33,6 +31,8 @@ export default class Resources extends EventEmitter
             { name: 'introStaticBase', source: './models/intro/static/base.glb' },
             { name: 'introStaticCollision', source: './models/intro/static/collision.glb' },
             { name: 'introStaticFloorShadow', source: './models/intro/static/floorShadow.png', type: 'texture' },
+
+            { name: 'stFont', source: './fonts/st-font.ttf' },
 
             { name: 'introInstructionsLabels', source: './models/intro/instructions/labels.glb' },
             { name: 'introInstructionsArrows', source: './models/intro/instructions/arrows.png', type: 'texture' },
@@ -224,13 +224,11 @@ export default class Resources extends EventEmitter
             // { name: 'eggCollision', source: './models/egg/collision.glb' },
         ])
 
-        this.loader.on('fileEnd', (_resource, _data) =>
-        {
+        this.loader.on('fileEnd', (_resource, _data) => {
             this.items[_resource.name] = _data
 
             // Texture
-            if(_resource.type === 'texture')
-            {
+            if (_resource.type === 'texture') {
                 const texture = new THREE.Texture(_data)
                 texture.needsUpdate = true
 
@@ -241,8 +239,7 @@ export default class Resources extends EventEmitter
             this.trigger('progress', [this.loader.loaded / this.loader.toLoad])
         })
 
-        this.loader.on('end', () =>
-        {
+        this.loader.on('end', () => {
             // Trigger ready
             this.trigger('ready')
         })

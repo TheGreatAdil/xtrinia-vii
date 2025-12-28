@@ -3,10 +3,8 @@ import * as THREE from 'three'
 import ProjectBoardMaterial from '../../Materials/ProjectBoard.js'
 import gsap from 'gsap'
 
-export default class Project
-{
-    constructor(_options)
-    {
+export default class Project {
+    constructor(_options) {
         // Options
         this.time = _options.time
         this.resources = _options.resources
@@ -33,21 +31,18 @@ export default class Project
         this.setFloor()
     }
 
-    setBoards()
-    {
+    setBoards() {
         // Set up
         this.boards = {}
         this.boards.items = []
         this.boards.xStart = - 5
         this.boards.xInter = 5
         this.boards.y = 5
-        this.boards.color = '#8e7161'
+        this.boards.color = '#808080'
         this.boards.threeColor = new THREE.Color(this.boards.color)
 
-        if(this.debug)
-        {
-            this.debug.addColor(this.boards, 'color').name('boardColor').onChange(() =>
-            {
+        if (this.debug) {
+            this.debug.addColor(this.boards, 'color').name('boardColor').onChange(() => {
                 this.boards.threeColor.set(this.boards.color)
             })
         }
@@ -55,8 +50,7 @@ export default class Project
         // Create each board
         let i = 0
 
-        for(const _imageSource of this.imageSources)
-        {
+        for (const _imageSource of this.imageSources) {
             // Set up
             const board = {}
             board.x = this.x + this.boards.xStart + i * this.boards.xInter
@@ -75,8 +69,7 @@ export default class Project
 
             // Image load
             const image = new Image()
-            image.addEventListener('load', () =>
-            {
+            image.addEventListener('load', () => {
                 board.texture = new THREE.Texture(image)
                 // board.texture.magFilter = THREE.NearestFilter
                 // board.texture.minFilter = THREE.LinearFilter
@@ -109,8 +102,7 @@ export default class Project
         }
     }
 
-    setFloor()
-    {
+    setFloor() {
         this.floor = {}
 
         this.floor.x = 0
@@ -133,77 +125,11 @@ export default class Project
         this.floor.geometry = this.geometries.floor
 
         // Material
-        this.floor.material =  new THREE.MeshBasicMaterial({ transparent: true, depthWrite: false, alphaMap: this.floor.texture })
+        this.floor.material = new THREE.MeshBasicMaterial({ transparent: true, depthWrite: false, alphaMap: this.floor.texture })
 
         // Mesh
         this.floor.mesh = new THREE.Mesh(this.floor.geometry, this.floor.material)
         this.floor.mesh.matrixAutoUpdate = false
         this.floor.container.add(this.floor.mesh)
-
-        // Distinctions
-        if(this.distinctions)
-        {
-            for(const _distinction of this.distinctions)
-            {
-                let base = null
-                let collision = null
-                let shadowSizeX = null
-                let shadowSizeY = null
-
-                switch(_distinction.type)
-                {
-                    case 'awwwards':
-                        base = this.resources.items.projectsDistinctionsAwwwardsBase.scene
-                        collision = this.resources.items.projectsDistinctionsAwwwardsCollision.scene
-                        shadowSizeX = 1.5
-                        shadowSizeY = 1.5
-                        break
-
-                    case 'fwa':
-                        base = this.resources.items.projectsDistinctionsFWABase.scene
-                        collision = this.resources.items.projectsDistinctionsFWACollision.scene
-                        shadowSizeX = 2
-                        shadowSizeY = 1
-                        break
-
-                    case 'cssda':
-                        base = this.resources.items.projectsDistinctionsCSSDABase.scene
-                        collision = this.resources.items.projectsDistinctionsCSSDACollision.scene
-                        shadowSizeX = 1.2
-                        shadowSizeY = 1.2
-                        break
-                }
-
-                this.objects.add({
-                    base: base,
-                    collision: collision,
-                    offset: new THREE.Vector3(this.x + this.floor.x + _distinction.x, this.y + this.floor.y + _distinction.y, 0),
-                    rotation: new THREE.Euler(0, 0, 0),
-                    duplicated: true,
-                    shadow: { sizeX: shadowSizeX, sizeY: shadowSizeY, offsetZ: - 0.1, alpha: 0.5 },
-                    mass: 1.5,
-                    soundName: 'woodHit'
-                })
-            }
-        }
-
-        // Area
-        this.floor.area = this.areas.add({
-            position: new THREE.Vector2(this.x + this.link.x, this.y + this.floor.y + this.link.y),
-            halfExtents: new THREE.Vector2(this.link.halfExtents.x, this.link.halfExtents.y)
-        })
-        this.floor.area.on('interact', () =>
-        {
-            window.open(this.link.href, '_blank')
-        })
-
-        // Area label
-        this.floor.areaLabel = this.meshes.areaLabel.clone()
-        this.floor.areaLabel.position.x = this.link.x
-        this.floor.areaLabel.position.y = this.link.y
-        this.floor.areaLabel.position.z = 0.001
-        this.floor.areaLabel.matrixAutoUpdate = false
-        this.floor.areaLabel.updateMatrix()
-        this.floor.container.add(this.floor.areaLabel)
     }
 }

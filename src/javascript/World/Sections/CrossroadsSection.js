@@ -1,9 +1,7 @@
 import * as THREE from 'three'
 
-export default class CrossroadsSection
-{
-    constructor(_options)
-    {
+export default class CrossroadsSection {
+    constructor(_options) {
         // Options
         this.time = _options.time
         this.resources = _options.resources
@@ -22,8 +20,7 @@ export default class CrossroadsSection
         this.setTiles()
     }
 
-    setStatic()
-    {
+    setStatic() {
         this.objects.add({
             base: this.resources.items.crossroadsStaticBase.scene,
             collision: this.resources.items.crossroadsStaticCollision.scene,
@@ -33,8 +30,7 @@ export default class CrossroadsSection
         })
     }
 
-    setTiles()
-    {
+    setTiles() {
         // To intro
         this.tiles.add({
             start: new THREE.Vector2(this.x, - 10),

@@ -1,10 +1,8 @@
 import * as THREE from 'three'
 import FloorMaterial from '../Materials/Floor.js'
 
-export default class Floor
-{
-    constructor(_options)
-    {
+export default class Floor {
+    constructor(_options) {
         // Options
         this.debug = _options.debug
 
@@ -17,16 +15,15 @@ export default class Floor
 
         // Colors
         this.colors = {}
-        this.colors.topLeft = '#f5883c'
-        this.colors.topRight = '#ff9043'
-        this.colors.bottomRight = '#fccf92'
-        this.colors.bottomLeft = '#f5aa58'
+        this.colors.topLeft = '#4a4a4a'
+        this.colors.topRight = '#5c5c5c'
+        this.colors.bottomRight = '#333333'
+        this.colors.bottomLeft = '#3e3e3e'
 
         // Material
         this.material = new FloorMaterial()
 
-        this.updateMaterial = () =>
-        {
+        this.updateMaterial = () => {
             const topLeft = new THREE.Color(this.colors.topLeft)
             const topRight = new THREE.Color(this.colors.topRight)
             const bottomRight = new THREE.Color(this.colors.bottomRight)
@@ -61,8 +58,7 @@ export default class Floor
         this.container.add(this.mesh)
 
         // Debug
-        if(this.debug)
-        {
+        if (this.debug) {
             const folder = this.debug.addFolder('floor')
             // folder.open()
 

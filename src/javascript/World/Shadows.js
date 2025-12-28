@@ -2,10 +2,8 @@ import * as THREE from 'three'
 import ShadowMaterial from '../Materials/Shadow.js'
 import { TransformControls } from 'three/examples/jsm/controls/TransformControls.js'
 
-export default class Shadows
-{
-    constructor(_options)
-    {
+export default class Shadows {
+    constructor(_options) {
         // Options
         this.time = _options.time
         this.debug = _options.debug
@@ -17,7 +15,7 @@ export default class Shadows
         this.maxDistance = 3
         this.distancePower = 2
         this.zFightingDistance = 0.001
-        this.color = '#d04500'
+        this.color = '#808080'
         this.wireframeVisible = false
         this.items = []
 
@@ -26,28 +24,23 @@ export default class Shadows
         this.container.updateMatrix()
 
         // Debug
-        if(this.debug)
-        {
+        if (this.debug) {
             this.debugFolder = this.debug.addFolder('shadows')
             // this.debugFolder.open()
 
             this.debugFolder.add(this, 'alpha').step(0.01).min(0).max(1)
             this.debugFolder.add(this, 'maxDistance').step(0.01).min(0).max(10)
             this.debugFolder.add(this, 'distancePower').step(0.01).min(1).max(5)
-            this.debugFolder.add(this, 'wireframeVisible').name('wireframeVisible').onChange(() =>
-            {
-                for(const _shadow of this.items)
-                {
+            this.debugFolder.add(this, 'wireframeVisible').name('wireframeVisible').onChange(() => {
+                for (const _shadow of this.items) {
                     _shadow.mesh.material = this.wireframeVisible ? this.materials.wireframe : _shadow.material
                 }
             })
 
-            this.debugFolder.addColor(this, 'color').onChange(() =>
-            {
+            this.debugFolder.addColor(this, 'color').onChange(() => {
                 this.materials.base.uniforms.uColor.value = new THREE.Color(this.color)
 
-                for(const _shadow of this.items)
-                {
+                for (const _shadow of this.items) {
                     _shadow.material.uniforms.uColor.value = new THREE.Color(this.color)
                 }
             })
@@ -59,10 +52,8 @@ export default class Shadows
         this.setHelper()
 
         // Time tick
-        this.time.on('tick', () =>
-        {
-            for(const _shadow of this.items)
-            {
+        this.time.on('tick', () => {
+            for (const _shadow of this.items) {
                 // Position
                 const z = Math.max(_shadow.reference.position.z + _shadow.offsetZ, 0)
                 const sunOffset = this.sun.vector.clone().multiplyScalar(z)
@@ -97,8 +88,7 @@ export default class Shadows
         })
     }
 
-    setSun()
-    {
+    setSun() {
         this.sun = {}
         this.sun.position = new THREE.Vector3(- 2.5, - 2.65, 3.75)
         this.sun.vector = new THREE.Vector3()
@@ -106,8 +96,7 @@ export default class Shadows
         this.sun.helper.visible = false
         this.container.add(this.sun.helper)
 
-        this.sun.update = () =>
-        {
+        this.sun.update = () => {
             this.sun.vector.copy(this.sun.position).multiplyScalar(1 / this.sun.position.z).negate()
             this.sun.helper.position.copy(this.sun.position)
 
@@ -120,8 +109,7 @@ export default class Shadows
         this.sun.update()
 
         // Debug
-        if(this.debug)
-        {
+        if (this.debug) {
             const folder = this.debugFolder.addFolder('sun')
             folder.open()
 
@@ -132,8 +120,7 @@ export default class Shadows
         }
     }
 
-    setMaterials()
-    {
+    setMaterials() {
         // Wireframe
         this.materials = {}
         this.materials.wireframe = new THREE.MeshBasicMaterial({ color: 0xffffff, wireframe: true })
@@ -146,15 +133,12 @@ export default class Shadows
         this.materials.base.uniforms.uFadeRadius.value = 0.35
     }
 
-    setGeometry()
-    {
+    setGeometry() {
         this.geometry = new THREE.PlaneGeometry(1, 1, 1, 1)
     }
 
-    setHelper()
-    {
-        if(!this.debug)
-        {
+    setHelper() {
+        if (!this.debug) {
             return
         }
 
@@ -177,33 +161,27 @@ export default class Shadows
         this.helper.shadow = this.add(this.helper.mesh, { sizeX: 6, sizeY: 2, offsetZ: - 0.35, alpha: 0.99 })
         this.helper.shadow.mesh.visible = this.helper.active
 
-        document.addEventListener('keydown', (_event) =>
-        {
-            if(_event.key === 'r')
-            {
+        document.addEventListener('keydown', (_event) => {
+            if (_event.key === 'r') {
                 this.helper.transformControls.setMode('rotate')
             }
-            else if(_event.key === 'g')
-            {
+            else if (_event.key === 'g') {
                 this.helper.transformControls.setMode('translate')
             }
         })
 
-        this.helper.transformControls.addEventListener('dragging-changed', (_event) =>
-        {
+        this.helper.transformControls.addEventListener('dragging-changed', (_event) => {
             this.camera.orbitControls.enabled = !_event.value
         })
 
         this.container.add(this.helper.transformControls)
 
         // Debug
-        if(this.debug)
-        {
+        if (this.debug) {
             const folder = this.debugFolder.addFolder('helper')
             folder.open()
 
-            folder.add(this.helper, 'active').name('visible').onChange(() =>
-            {
+            folder.add(this.helper, 'active').name('visible').onChange(() => {
                 this.helper.mesh.visible = this.helper.active
 
                 this.helper.transformControls.visible = this.helper.active
@@ -214,8 +192,7 @@ export default class Shadows
         }
     }
 
-    add(_reference, _options = {})
-    {
+    add(_reference, _options = {}) {
         const shadow = {}
 
         // Options
