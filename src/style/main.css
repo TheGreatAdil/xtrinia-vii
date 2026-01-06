@@ -55,7 +55,7 @@ html {
     bottom: 0;
     right: 0;
     /* width: 100%; */
-    font-family: 'Comic Neue', cursive;
+    font-family: 'Bebas Neue', cursive;
     font-weight: 700;
     color: #ffffff;
     font-size: 18px;
@@ -282,9 +282,10 @@ html {
     color: #808080;
     text-decoration: none;
     border-radius: 30px;
-    font-family: 'Comic Neue', cursive;
+    font-family: 'Bebas Neue', cursive;
     font-weight: 700;
     font-size: 18px;
+    letter-spacing: 2px;
     transition: transform 0.2s ease-in-out, background 0.2s;
     z-index: 1000;
 }
