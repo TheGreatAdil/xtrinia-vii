@@ -83,7 +83,8 @@ export default class InformationSection {
             // Create area
             item.area = this.areas.add({
                 position: new THREE.Vector2(item.x, item.y),
-                halfExtents: new THREE.Vector2(this.links.halfExtents.x, this.links.halfExtents.y)
+                halfExtents: new THREE.Vector2(this.links.halfExtents.x, this.links.halfExtents.y),
+                mouseHalfExtents: new THREE.Vector2(this.links.halfExtents.x, this.links.halfExtents.y + 1)
             })
             item.area.on('interact', () => {
                 window.open(_option.href, '_blank')

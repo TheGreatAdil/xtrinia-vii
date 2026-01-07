@@ -7,10 +7,8 @@ import AreaFenceGeometry from '../Geometries/AreaFenceGeometry.js'
 import AreaFenceMaterial from '../Materials/AreaFence.js'
 import AreaFloorBordereMaterial from '../Materials/AreaFloorBorder.js'
 
-export default class Area extends EventEmitter
-{
-    constructor(_options)
-    {
+export default class Area extends EventEmitter {
+    constructor(_options) {
         super()
 
         // Options
@@ -25,6 +23,7 @@ export default class Area extends EventEmitter
         this.hasKey = _options.hasKey
         this.testCar = _options.testCar
         this.active = _options.active
+        this.mouseHalfExtents = _options.mouseHalfExtents
 
         // Set up
         this.container = new THREE.Object3D()
@@ -40,34 +39,28 @@ export default class Area extends EventEmitter
         this.setFence()
         this.setInteractions()
 
-        if(this.hasKey)
-        {
+        if (this.hasKey) {
             this.setKey()
         }
     }
 
-    activate()
-    {
+    activate() {
         this.active = true
 
-        if(this.isIn)
-        {
+        if (this.isIn) {
             this.in()
         }
     }
 
-    deactivate()
-    {
+    deactivate() {
         this.active = false
 
-        if(this.isIn)
-        {
+        if (this.isIn) {
             this.out()
         }
     }
 
-    setFloorBorder()
-    {
+    setFloorBorder() {
         this.floorBorder = {}
 
         this.floorBorder.geometry = new AreaFloorBorderGeometry(this.halfExtents.x * 2, this.halfExtents.y * 2, 0.25)
@@ -82,8 +75,7 @@ export default class Area extends EventEmitter
         this.container.add(this.floorBorder.mesh)
     }
 
-    setFence()
-    {
+    setFence() {
         // Set up
         this.fence = {}
         this.fence.depth = 0.5
@@ -104,14 +96,12 @@ export default class Area extends EventEmitter
         this.container.add(this.fence.mesh)
 
         // Time tick
-        this.time.on('tick', () =>
-        {
+        this.time.on('tick', () => {
             this.fence.material.uniforms.uTime.value = this.time.elapsed
         })
     }
 
-    setKey()
-    {
+    setKey() {
         this.key = {}
         this.key.hiddenZ = 1.5
         this.key.shownZ = 2.5
@@ -158,11 +148,9 @@ export default class Area extends EventEmitter
         this.key.container.add(this.key.icon.mesh)
     }
 
-    interact(_showKey = true)
-    {
+    interact(_showKey = true) {
         // Not active
-        if(!this.active)
-        {
+        if (!this.active) {
             return
         }
 
@@ -171,23 +159,22 @@ export default class Area extends EventEmitter
         gsap.killTweensOf(this.floorBorder.material.uniforms.uAlpha)
         gsap.killTweensOf(this.fence.material.uniforms.uBorderAlpha)
 
-        if(this.hasKey)
-        {
+        if (this.hasKey) {
             gsap.killTweensOf(this.key.container.position)
             gsap.killTweensOf(this.key.icon.material)
             gsap.killTweensOf(this.key.enter.material)
         }
 
         // Animate
-        gsap.to(this.fence.mesh.position, { z: 0, duration: 0.05, onComplete: () =>
-        {
-            gsap.to(this.fence.mesh.position, { z: 0.5, duration: 0.25, ease: 'back.out(2)' })
-            gsap.fromTo(this.floorBorder.material.uniforms.uAlpha, { value: 1 }, { value: 0.5, duration: 1.5 })
-            gsap.fromTo(this.fence.material.uniforms.uBorderAlpha, { value: 1 }, { value: 0.5, duration: 1.5 })
-        } })
+        gsap.to(this.fence.mesh.position, {
+            z: 0, duration: 0.05, onComplete: () => {
+                gsap.to(this.fence.mesh.position, { z: 0.5, duration: 0.25, ease: 'back.out(2)' })
+                gsap.fromTo(this.floorBorder.material.uniforms.uAlpha, { value: 1 }, { value: 0.5, duration: 1.5 })
+                gsap.fromTo(this.fence.material.uniforms.uBorderAlpha, { value: 1 }, { value: 0.5, duration: 1.5 })
+            }
+        })
 
-        if(this.hasKey && _showKey)
-        {
+        if (this.hasKey && _showKey) {
             this.key.container.position.z = this.key.shownZ
             gsap.fromTo(this.key.icon.material, { opacity: 1 }, { opacity: 0.5, duration: 1.5 })
             gsap.fromTo(this.key.enter.material, { opacity: 1 }, { opacity: 0.5, duration: 1.5 })
@@ -199,13 +186,11 @@ export default class Area extends EventEmitter
         this.trigger('interact')
     }
 
-    in(_showKey = true)
-    {
+    in(_showKey = true) {
         this.isIn = true
 
         // Not active
-        if(!this.active)
-        {
+        if (!this.active) {
             return
         }
 
@@ -214,15 +199,13 @@ export default class Area extends EventEmitter
         gsap.to(this.fence.mesh.position, { z: this.fence.offset, duration: 0.35, ease: 'back.out(3)' })
 
         // Key
-        if(this.hasKey)
-        {
+        if (this.hasKey) {
             gsap.killTweensOf(this.key.container.position)
             gsap.killTweensOf(this.key.icon.material)
             gsap.killTweensOf(this.key.enter.material)
 
             // Animate
-            if(_showKey)
-            {
+            if (_showKey) {
                 gsap.to(this.key.container.position, { z: this.key.shownZ, duration: 0.35, ease: 'back.out(3)', delay: 0.1 })
                 gsap.to(this.key.icon.material, { opacity: 0.5, duration: 0.35, ease: 'back.out(3)', delay: 0.1 })
                 gsap.to(this.key.enter.material, { opacity: 0.5, duration: 0.35, ease: 'back.out(3)', delay: 0.1 })
@@ -230,16 +213,14 @@ export default class Area extends EventEmitter
         }
 
         // Change cursor
-        if(!this.config.touch)
-        {
+        if (!this.config.touch) {
             this.renderer.domElement.classList.add('has-cursor-pointer')
         }
 
         this.trigger('in')
     }
 
-    out()
-    {
+    out() {
         this.isIn = false
 
         // Fence
@@ -247,8 +228,7 @@ export default class Area extends EventEmitter
         gsap.to(this.fence.mesh.position, { z: - this.fence.depth, duration: 0.35, ease: 'back.in(4)' })
 
         // Key
-        if(this.hasKey)
-        {
+        if (this.hasKey) {
             gsap.killTweensOf(this.key.container.position)
             gsap.killTweensOf(this.key.icon.material)
             gsap.killTweensOf(this.key.enter.material)
@@ -258,18 +238,18 @@ export default class Area extends EventEmitter
         }
 
         // Change cursor
-        if(!this.config.touch)
-        {
+        if (!this.config.touch) {
             this.renderer.domElement.classList.remove('has-cursor-pointer')
         }
 
         this.trigger('out')
     }
 
-    setInteractions()
-    {
+    setInteractions() {
+        const mouseHalfExtents = this.mouseHalfExtents ? this.mouseHalfExtents : this.halfExtents
+
         this.mouseMesh = new THREE.Mesh(
-            new THREE.PlaneGeometry(this.halfExtents.x * 2, this.halfExtents.y * 2, 1, 1),
+            new THREE.PlaneGeometry(mouseHalfExtents.x * 2, mouseHalfExtents.y * 2, 1, 1),
             new THREE.MeshBasicMaterial({ transparent: true, opacity: 0 })
         )
         this.mouseMesh.position.z = - 0.01
@@ -277,30 +257,23 @@ export default class Area extends EventEmitter
         this.mouseMesh.updateMatrix()
         this.container.add(this.mouseMesh)
 
-        this.time.on('tick', () =>
-        {
-            if(this.testCar)
-            {
+        this.time.on('tick', () => {
+            if (this.testCar) {
                 const isIn = Math.abs(this.car.position.x - this.position.x) < Math.abs(this.halfExtents.x) && Math.abs(this.car.position.y - this.position.y) < Math.abs(this.halfExtents.y)
 
-                if(isIn !== this.isIn)
-                {
-                    if(isIn)
-                    {
+                if (isIn !== this.isIn) {
+                    if (isIn) {
                         this.in(!this.config.touch)
                     }
-                    else
-                    {
+                    else {
                         this.out()
                     }
                 }
             }
         })
 
-        window.addEventListener('keydown', (_event) =>
-        {
-            if((_event.key === 'f' || _event.key === 'e' || _event.key === 'Enter') && this.isIn)
-            {
+        window.addEventListener('keydown', (_event) => {
+            if ((_event.key === 'f' || _event.key === 'e' || _event.key === 'Enter') && this.isIn) {
                 this.interact()
             }
         })
