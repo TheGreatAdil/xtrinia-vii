@@ -70,7 +70,6 @@ export default class ProjectsSection {
                         './models/projects/threejsJourney/image1.jpeg',
                         './models/projects/threejsJourney/image2.jpeg',
                         './models/projects/threejsJourney/image3.jpeg',
-                        './models/projects/threejsJourney/slideD.webp',
 
                     ],
                 floorTexture: this.resources.items.projectsThreejsJourneyFloorTexture,
