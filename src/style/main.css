@@ -278,8 +278,8 @@ html {
     top: 40px;
     right: 40px;
     padding: 12px 24px;
-    background: #ffffff;
-    color: #808080;
+    background: #dd0000;
+    color: #ffffff;
     text-decoration: none;
     border-radius: 30px;
     font-family: 'Bebas Neue', cursive;
@@ -292,7 +292,7 @@ html {
 
 .ticket-button:hover {
     transform: scale(1.05);
-    background: #f0f0f0;
+    background: #ee0000;
 }
 
 @media (max-width: 768px) {
