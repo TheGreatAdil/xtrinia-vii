@@ -293,6 +293,7 @@ html {
 .ticket-button:hover {
     transform: scale(1.05);
     background: #ee0000;
+    cursor: default;
 }
 
 @media (max-width: 768px) {

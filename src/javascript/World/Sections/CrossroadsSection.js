@@ -1,5 +1,4 @@
 import * as THREE from 'three'
-import Countdown from '../Countdown.js'
 
 export default class CrossroadsSection {
     constructor(_options) {
@@ -19,57 +18,72 @@ export default class CrossroadsSection {
 
         this.setStatic()
         this.setTiles()
-        this.setCountdown()
+        this.setParticles()
     }
 
-    setCountdown() {
-        const targetDate = '2026-01-30T16:00:00+05:30'
+    setParticles() {
+        const count = 80
 
-        // Countdown 1 - Days
-        this.countdown1 = new Countdown({
-            time: this.time,
-            resources: this.resources,
-            debug: this.debug,
-            position: { x: -2.15, y: -30.1, z: 1.45 },
-            targetDate: targetDate,
-            unit: 'days'
-        })
-        this.container.add(this.countdown1.container)
+        // Store particle data for animation
+        this.particleData = []
+        for (let i = 0; i < count; i++) {
+            this.particleData.push({
+                angle: Math.random() * Math.PI * 2,
+                radius: 1.0 + Math.random() * 2.5,
+                speed: 0.3 + Math.random() * 0.7,
+                zOffset: Math.random() * Math.PI * 2
+            })
+        }
 
-        // Countdown 2 - Hours
-        this.countdown2 = new Countdown({
-            time: this.time,
-            resources: this.resources,
-            debug: this.debug,
-            position: { x: -0.9, y: -30.1, z: 1.45 },
-            targetDate: targetDate,
-            unit: 'hours'
-        })
-        this.container.add(this.countdown2.container)
+        // Geometry
+        const geometry = new THREE.BufferGeometry()
+        const positions = new Float32Array(count * 3)
 
-        // Countdown 3 - Minutes
-        this.countdown3 = new Countdown({
-            time: this.time,
-            resources: this.resources,
-            debug: this.debug,
-            position: { x: 0.35, y: -30.1, z: 1.45 },
-            targetDate: targetDate,
-            unit: 'minutes'
-        })
-        this.container.add(this.countdown3.container)
+        // Initialize positions
+        for (let i = 0; i < count; i++) {
+            const i3 = i * 3
+            positions[i3] = this.x
+            positions[i3 + 1] = this.y
+            positions[i3 + 2] = 2.5
+        }
 
-        // Countdown 4 - Seconds
-        this.countdown4 = new Countdown({
-            time: this.time,
-            resources: this.resources,
-            debug: this.debug,
-            position: { x: 1.6, y: -30.1, z: 1.45 },
-            targetDate: targetDate,
-            unit: 'seconds'
+        geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3))
+
+        // Material - simple red glowing points
+        const material = new THREE.PointsMaterial({
+            color: 0xff0000,
+            size: 0.15,
+            sizeAttenuation: true,
+            transparent: true,
+            opacity: 0.8,
+            depthWrite: false,
+            blending: THREE.AdditiveBlending
         })
-        this.container.add(this.countdown4.container)
+
+        // Create points mesh
+        this.particles = new THREE.Points(geometry, material)
+        this.objects.container.add(this.particles)
+
+        // Animation loop
+        this.time.on('tick', () => {
+            const positions = this.particles.geometry.attributes.position.array
+            const time = this.time.elapsed * 0.001
+
+            for (let i = 0; i < count; i++) {
+                const i3 = i * 3
+                const data = this.particleData[i]
+
+                const angle = data.angle + time * data.speed
+                const radius = data.radius + Math.sin(time * 0.5 + data.zOffset) * 0.3
+
+                positions[i3] = this.x + Math.cos(angle) * radius
+                positions[i3 + 1] = this.y + Math.sin(angle) * radius
+                positions[i3 + 2] = 2.5 + Math.sin(time * data.speed + data.zOffset) * 1.5
+            }
+
+            this.particles.geometry.attributes.position.needsUpdate = true
+        })
     }
-
     setStatic() {
         this.objects.add({
             base: this.resources.items.crossroadsStaticBase.scene,
